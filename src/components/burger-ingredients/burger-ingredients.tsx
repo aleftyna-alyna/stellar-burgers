@@ -2,6 +2,10 @@ import { BurgerIngredientsUI } from '@ui';
 import { useMemo, useState, useRef, useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
+import { selectIngredientsState } from '../../services/slices/ingredients-slice';
+//импортируем типизированный селектор функцию выбора из стора
+import { useSelector } from '../../services/store';
+
 import type { TIngredient, TTabMode } from '@utils-types';
 
 export const BurgerIngredients = (): React.JSX.Element => {
@@ -9,8 +13,8 @@ export const BurgerIngredients = (): React.JSX.Element => {
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
   const titleSaucesRef = useRef<HTMLHeadingElement>(null);
-  // TODO: Взять ингредиенты из стора
-  const ingredients: TIngredient[] = [];
+  // достаем реальные игредиенты из Redux-хранилища
+  const { ingredients } = useSelector(selectIngredientsState);
 
   const [bunsRef, inViewBuns] = useInView({
     threshold: 0,

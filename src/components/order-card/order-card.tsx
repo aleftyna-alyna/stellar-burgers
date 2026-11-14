@@ -2,6 +2,10 @@ import { OrderCardUI } from '@ui';
 import { memo, useMemo } from 'react';
 import { useLocation } from 'react-router-dom';
 
+import { selectIngredientsState } from '../../services/slices/ingredients-slice';
+// Импортируем хук и селектор списка всех ингредиентов
+import { useSelector } from '../../services/store';
+
 import type { OrderCardProps } from './type';
 import type { TIngredient } from '@utils-types';
 
@@ -12,8 +16,8 @@ export const OrderCard = memo(function OrderCard({
 }: OrderCardProps): React.JSX.Element | null {
   const location = useLocation();
 
-  // TODO: Взять переменную из стора
-  const ingredients: TIngredient[] = [];
+  // Берем реальный список всех ингредиентов из Redux
+  const { ingredients } = useSelector(selectIngredientsState);
 
   const orderInfo = useMemo(() => {
     if (!ingredients.length) return null;
