@@ -7,7 +7,7 @@ import {
   updateUserApi,
   logoutApi,
 } from '../../utils/burger-api';
-import { setCookie, deleteCookie, getCookie } from '../../utils/cookie';
+import { setCookie, deleteCookie } from '../../utils/cookie';
 
 import type { TRegisterData, TLoginData } from '../../utils/burger-api';
 import type { TUser } from '../../utils/types';
@@ -63,9 +63,6 @@ export const checkUserAuth = createAsyncThunk<TUser, void, { rejectValue: string
   'user/checkAuth',
   async (_, { rejectWithValue }) => {
     try {
-      if (!getCookie('accessToken')) {
-        return rejectWithValue('Токен отсутствует');
-      }
       const response = await getUserApi();
       return response.user;
     } catch (err: unknown) {
@@ -129,7 +126,7 @@ const userSlice = createSlice({
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload! || 'Ошибка регистрации';
+        state.error = action.payload ?? 'Ошибка регистрации';
       })
 
       // Вход
@@ -144,7 +141,7 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload! || 'Ошибка входа';
+        state.error = action.payload ?? 'Ошибка входа';
       })
 
       // Проверка токена при старте
@@ -168,7 +165,7 @@ const userSlice = createSlice({
       })
       .addCase(updateUser.rejected, (state, action) => {
         state.isLoading = false;
-        state.error = action.payload! || 'Ошибка обновления профиля';
+        state.error = action.payload ?? 'Ошибка обновления профиля';
       })
 
       // Выход

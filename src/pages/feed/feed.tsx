@@ -8,7 +8,7 @@ import { useDispatch, useSelector } from '../../services/store';
 
 export const Feed = (): React.JSX.Element => {
   const dispatch = useDispatch();
-  const { feedOrders, isLoading } = useSelector(selectOrderState);
+  const { feedOrders, isFeedLoading } = useSelector(selectOrderState);
 
   useEffect(() => {
     void dispatch(fetchFeeds());
@@ -18,7 +18,7 @@ export const Feed = (): React.JSX.Element => {
     void dispatch(fetchFeeds());
   };
 
-  if (isLoading || !feedOrders.length) {
+  if (isFeedLoading || !feedOrders.length) {
     return <Preloader />;
   }
 

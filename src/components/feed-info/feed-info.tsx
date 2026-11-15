@@ -13,14 +13,14 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
     .slice(0, 20);
 
 export const FeedInfo = (): React.JSX.Element => {
-  const { feedOrders, total, totalToday, isLoading, error } =
+  const { feedOrders, total, totalToday, isFeedLoading, error } =
     useSelector(selectOrderState);
 
   const feed = {
     orders: feedOrders,
     total,
     totalToday,
-    isLoading,
+    isLoading: isFeedLoading,
     error: error ? new Error(error) : null,
   };
 

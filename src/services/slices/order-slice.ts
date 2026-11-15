@@ -18,7 +18,8 @@ type OrderState = {
   totalToday: number; // Выполнено за сегодня
   userOrders: TOrder[]; // Список заказов текущего пользователя
   currentOrder: TOrder | null; // Детали одного конкретного заказа (по номеру)
-  isLoading: boolean;
+  isFeedLoading: boolean; // отдельный флаг загрузки ленты и истории
+  isOrderLoading: boolean; // отдельный флаг загрузки одного заказа
   error: string | null;
 };
 
@@ -30,7 +31,8 @@ const initialState: OrderState = {
   totalToday: 0,
   userOrders: [],
   currentOrder: null,
-  isLoading: false,
+  isFeedLoading: false,
+  isOrderLoading: false,
   error: null,
 };
 
@@ -122,51 +124,51 @@ const orderSlice = createSlice({
       })
       .addCase(createOrder.rejected, (state, action) => {
         state.orderRequest = false;
-        state.error = action.payload! || 'Ошибка при создании заказа';
+        state.error = action.payload ?? 'Ошибка при создании заказа';
       })
 
       // Общая лента заказов
       .addCase(fetchFeeds.pending, (state) => {
-        state.isLoading = true;
+        state.isFeedLoading = true;
         state.error = null;
       })
       .addCase(fetchFeeds.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isFeedLoading = false;
         state.feedOrders = action.payload.orders;
         state.total = action.payload.total;
         state.totalToday = action.payload.totalToday;
       })
       .addCase(fetchFeeds.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload! || 'Ошибка загрузки ленты';
+        state.isFeedLoading = false;
+        state.error = action.payload ?? 'Ошибка загрузки ленты';
       })
 
       // История заказов пользователя
       .addCase(fetchUserOrders.pending, (state) => {
-        state.isLoading = true;
+        state.isFeedLoading = true;
         state.error = null;
       })
       .addCase(fetchUserOrders.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isFeedLoading = false;
         state.userOrders = action.payload;
       })
       .addCase(fetchUserOrders.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload! || 'Ошибка загрузки истории';
+        state.isFeedLoading = false;
+        state.error = action.payload ?? 'Ошибка загрузки истории';
       })
 
       // Детали одного заказа
       .addCase(fetchOrderByNumber.pending, (state) => {
-        state.isLoading = true;
+        state.isOrderLoading = true;
         state.currentOrder = null;
       })
       .addCase(fetchOrderByNumber.fulfilled, (state, action) => {
-        state.isLoading = false;
+        state.isOrderLoading = false;
         state.currentOrder = action.payload;
       })
       .addCase(fetchOrderByNumber.rejected, (state, action) => {
-        state.isLoading = false;
-        state.error = action.payload! || 'Заказ не найден';
+        state.isOrderLoading = false;
+        state.error = action.payload ?? 'Заказ не найден';
       });
   },
 });
