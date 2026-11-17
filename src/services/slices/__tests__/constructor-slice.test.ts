@@ -4,11 +4,11 @@ import {
   removeIngredient,
   moveIngredient,
   clearConstructor,
+  initialState,
 } from '../constructor-slice';
 
 import type { TIngredient, TConstructorIngredient } from '../../../utils/types';
 
-// Моковые ингредиенты
 const mockBun: TIngredient = {
   _id: '643d69a5c3f7b9001cfa093c',
   name: 'Краторная булка N-200i',
@@ -52,11 +52,6 @@ const mockSauce: TIngredient = {
 };
 
 describe('Тесты редьюсера constructorReducer', () => {
-  const initialState = {
-    bun: null,
-    ingredients: [],
-  };
-
   test('должен возвращать начальное состояние при передаче undefined и неизвестного экшена', () => {
     const result = constructorReducer(undefined, { type: 'UNKNOWN' });
     expect(result).toEqual(initialState);
@@ -104,7 +99,6 @@ describe('Тесты редьюсера constructorReducer', () => {
       ingredients: [firstItem, secondItem],
     };
 
-    // Перемещаем первый элемент на вторую позицию (index 0 -> index 1)
     const result = constructorReducer(
       prevState,
       moveIngredient({ fromIndex: 0, toIndex: 1 })
