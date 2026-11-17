@@ -1,0 +1,98 @@
+import { ingredientsReducer, fetchIngredients } from '../ingredients-slice';
+
+import type { TIngredient } from '../../../utils/types';
+
+// Моковые данные ингредиентов для проверки
+const mockIngredients: TIngredient[] = [
+  {
+    _id: '643d69a5c3f7b9001cfa093c',
+    name: 'Краторная булка N-200i',
+    type: 'bun',
+    proteins: 80,
+    fat: 24,
+    carbohydrates: 53,
+    calories: 420,
+    price: 1255,
+    image: 'https://yandex.net',
+    image_mobile: 'https://yandex.net',
+    image_large: 'https://yandex.net',
+  },
+  {
+    _id: '643d69a5c3f7b9001cfa0941',
+    name: 'Биокотлета из марсианской Магнолии',
+    type: 'main',
+    proteins: 420,
+    fat: 142,
+    carbohydrates: 242,
+    calories: 4242,
+    price: 424,
+    image: 'https://yandex.net',
+    image_mobile: 'https://yandex.net',
+    image_large: 'https://yandex.net',
+  },
+];
+
+describe('Тесты редьюсера ingredientsReducer', () => {
+  const initialState = {
+    ingredients: [],
+    isLoading: false,
+    error: null,
+  };
+
+  test('должен возвращать начальное состояние при передаче undefined и неизвестного экшена', () => {
+    const result = ingredientsReducer(undefined, { type: 'UNKNOWN' });
+    expect(result).toEqual(initialState);
+  });
+
+  test('должен устанавливать isLoading: true и сбрасывать error при fetchIngredients.pending', () => {
+    const prevState = {
+      ...initialState,
+      error: 'Предыдущая ошибка',
+    };
+    const action = { type: fetchIngredients.pending.type };
+    const result = ingredientsReducer(prevState, action);
+
+    expect(result).toEqual({
+      ingredients: [],
+      isLoading: true,
+      error: null,
+    });
+  });
+
+  test('должен сохранять ингредиенты и устанавливать isLoading: false при fetchIngredients.fulfilled', () => {
+    const prevState = {
+      ...initialState,
+      isLoading: true,
+    };
+    const action = {
+      type: fetchIngredients.fulfilled.type,
+      payload: mockIngredients,
+    };
+    const result = ingredientsReducer(prevState, action);
+
+    expect(result).toEqual({
+      ingredients: mockIngredients,
+      isLoading: false,
+      error: null,
+    });
+  });
+
+  test('должен записывать ошибку и устанавливать isLoading: false при fetchIngredients.rejected', () => {
+    const prevState = {
+      ...initialState,
+      isLoading: true,
+    };
+    const errorMessage = 'Ошибка загрузки ингредиентов';
+    const action = {
+      type: fetchIngredients.rejected.type,
+      payload: errorMessage,
+    };
+    const result = ingredientsReducer(prevState, action);
+
+    expect(result).toEqual({
+      ingredients: [],
+      isLoading: false,
+      error: errorMessage,
+    });
+  });
+});
